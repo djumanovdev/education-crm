@@ -14,7 +14,7 @@ class IsTeacher(BasePermission):
         return request.user and request.user.is_manager
     
 class IsStudent(BasePermission):
-    message = 'siz user emassiz'
+    message = 'siz Student emassiz'
 
     def has_permission(self, request, view):
         return request.user and request.user.is_user
