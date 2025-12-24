@@ -17,6 +17,21 @@ class StudentsView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     authentication_classes = [TokenAuthentication]
 
+    def get(self,request:Request)->Response:
+        students = Student.objects.all()
+        student_data = []
+        for student in students:
+            serializer = {
+                "username": student.account.username,
+                "full_name": student.full_name,
+                "phone_number": student.phone_number,
+                "role": student.account.role,
+                "is_risk": student.is_risk,
+                "status": student.status,
+            }
+            student_data.append(serializer)
+        return Response(data=student_data)
+
     def post(self, request: Request) -> Response:
         serializer = StudentCreateSerializer(data=request.data)
 
