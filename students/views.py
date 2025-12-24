@@ -61,3 +61,24 @@ class StudentsView(APIView):
             }
 
             return Response(serializer, status=status.HTTP_201_CREATED)
+
+
+class StudentDeleteView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+    authentication_classes = [TokenAuthentication]
+
+    def delete(self, request: Request, student_id: int) -> Response:
+        student = Student.objects.filter(id=student_id).first()
+        if not student:
+            return Response(
+                {"message": "Student topilmadi"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        student.account.delete()
+        student.delete()
+
+        return Response(
+            {"message": "Student muvaffaqiyatli o'chirildi"},
+            status=status.HTTP_200_OK,
+        )
