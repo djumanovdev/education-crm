@@ -5,17 +5,18 @@ from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from rest_framework.generics import RetrieveAPIView
 
 from accounts.permissions import IsAdmin
 from .models import Student
-from .serializers import StudentCreateSerializer
+from .serializers import StudentCreateSerializer, StudentRetrieveSerializer
 
 CustomUser = get_user_model()
 
 
 class StudentsView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
-    authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAdmin]
+    #authentication_classes = [TokenAuthentication]
 
     def post(self, request: Request) -> Response:
         serializer = StudentCreateSerializer(data=request.data)
@@ -61,3 +62,7 @@ class StudentsView(APIView):
             }
 
             return Response(serializer, status=status.HTTP_201_CREATED)
+
+class StudentsRetrieveView(RetrieveAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentRetrieveSerializer
