@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
-from rest_framework import status
 from .models import CustomUser
 
 User = get_user_model()
@@ -41,5 +40,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
         
         return user
+    
+class LoginSerializer(serializers.Serializer):
+    
+    username = serializers.CharField(max_length=150)
+    password = serializers.CharField(max_length=120)
+    
     
     
