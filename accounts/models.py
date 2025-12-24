@@ -27,17 +27,3 @@ class CustomUser(AbstractUser):
     def is_student(self) -> bool:
         return self.role == self.Role.STUDENT
     
-    groups = models.ManyToManyField(
-        Group,
-        related_name='+', 
-        blank=True,
-        help_text='The groups this user belongs to.'
-    )
-
-    user_permissions = models.ManyToManyField(
-        Permission,
-        related_name='+', 
-        blank=True,
-        help_text='Specific permissions for this user.'
-    )
-
