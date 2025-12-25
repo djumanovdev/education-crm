@@ -5,15 +5,11 @@ from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView
 
 from accounts.permissions import IsAdmin
 from .models import Student
-from .serializers import (
-    StudentCreateSerializer,
-    StudentListserializer,
-    StudentGetOneSerializer,
-)
+from .serializers import StudentCreateSerializer, StudentListserializer, StudentGetOneSerializer, StudentUpdateSerializer
 
 CustomUser = get_user_model()
 
@@ -87,19 +83,21 @@ class StudentDeleteView(APIView):
             {"message": "Student muvaffaqiyatli o'chirildi"},
             status=status.HTTP_200_OK,
         )
-
-    def get(self, request: Request, student_id: int) -> Request:
+        
+    def get(self,request:Request,student_id: int)->Request:
+        
         try:
             student = Student.objects.get(id=student_id)
-        except Student.DoesNotExist:
+        
+        except Student.DoesNotExist:        
             return Response(
-                {"message": "Student Topilmadi"},
+                {"message":"Student Topilmadi"},
                 status=status.HTTP_404_NOT_FOUND,
             )
-
+            
         serializer = StudentGetOneSerializer(student)
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
 
 
 class StudentsListView(ListAPIView):
@@ -107,3 +105,13 @@ class StudentsListView(ListAPIView):
     authentication_classes = [TokenAuthentication]
     queryset = Student.objects.all()
     serializer_class = StudentListserializer
+    
+    
+    
+class StudentUpdateView(RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated,IsAdmin]
+    authentication_classes = [TokenAuthentication]
+    queryset = Student.objects.all()
+    serializer_class = StudentUpdateSerializer
+    lookup_field = 'id'
+    

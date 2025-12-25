@@ -29,3 +29,9 @@ class StudentGetOneSerializer(serializers.ModelSerializer):
             "updated_at",
             "account",
         ]
+
+
+class StudentUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = '__all__'
