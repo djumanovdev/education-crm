@@ -1,4 +1,6 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
+
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -17,9 +19,11 @@ class StudentsView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     authentication_classes = [TokenAuthentication]
 
-    def get(self,request:Request)->Response:
+    def get(self, request: Request) -> Response:
+
         students = Student.objects.all()
         student_data = []
+        
         for student in students:
             serializer = {
                 "username": student.account.username,
@@ -76,3 +80,17 @@ class StudentsView(APIView):
             }
 
             return Response(serializer, status=status.HTTP_201_CREATED)
+
+
+class StudentsDetailView(APIView):
+    def get(self, request: Request, pk: int) -> Response:
+        student = Student.objects.filter(pk=pk).first()
+        serializer = {
+            "username": student.account.username,
+            "full_name": student.full_name,
+            "phone_number": student.phone_number,
+            "role": student.account.role,
+            "is_risk": student.is_risk,
+            "status": student.status,
+        }
+        return Response(data=serializer, status=status.HTTP_200_OK)
