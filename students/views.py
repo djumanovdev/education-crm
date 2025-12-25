@@ -5,10 +5,11 @@ from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from rest_framework.generics import ListAPIView
 
 from accounts.permissions import IsAdmin
 from .models import Student
-from .serializers import StudentCreateSerializer
+from .serializers import StudentCreateSerializer, StudentListserializer
 
 CustomUser = get_user_model()
 
@@ -82,3 +83,10 @@ class StudentDeleteView(APIView):
             {"message": "Student muvaffaqiyatli o'chirildi"},
             status=status.HTTP_200_OK,
         )
+
+
+class StudentsListView(ListAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+    authentication_classes = [TokenAuthentication]
+    queryset = Student.objects.all()
+    serializer_class = StudentListserializer
