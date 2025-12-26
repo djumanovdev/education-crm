@@ -9,7 +9,7 @@ from rest_framework import status
 
 from accounts.permissions import IsAdmin
 from .models import Student
-from .serializers import StudentCreateSerializer
+from .serializers import StudentCreateSerializer, StudentDetailSerializer, StudentListSerializer
 
 CustomUser = get_user_model()
 
@@ -90,4 +90,22 @@ class StudentListView(ListAPIView):
     authentication_classes = [TokenAuthentication]
     queryset = Student.objects.all()
     serializer_class = StudentCreateSerializer
+
+
+class StudentDetailView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+    authentication_classes = [TokenAuthentication]
+
+    def get(self, request: Request, student_id: int) -> Response:
+        student = Student.objects.filter(id = student_id).first()
+        serilizer = {
+            "id": student.id,
+            "full_name": student.full_name,
+            "phone_number": student.phone_number,
+            "status": student.status,
+            "is_risk": student.is_risk,
+            "created_at": student.created_at,
+            "updated_at": student.updated_at
+        }
+        return Response(serilizer, status=status.HTTP_200_OK)
     
