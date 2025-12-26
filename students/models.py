@@ -5,7 +5,9 @@ CustomUser = get_user_model()
 
 
 class Student(models.Model):
-    account = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    account = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, related_name="student"
+    )
     full_name = models.CharField(max_length=150)
     phone_number = models.CharField(max_length=15, unique=True)
     status = models.BooleanField(default=True)

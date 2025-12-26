@@ -8,7 +8,11 @@ from rest_framework import status
 
 from accounts.permissions import IsAdmin
 from .models import Student
-from .serializers import StudentCreateSerializer, UserStudentDetailSerializer
+from .serializers import (
+    StudentCreateSerializer,
+    UserStudentDetailSerializer,
+    StudentUpdateSerailizer,
+)
 
 CustomUser = get_user_model()
 
@@ -54,3 +58,58 @@ class StudentsView(APIView):
             serializer = UserStudentDetailSerializer(user)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def get(self, request: Request) -> Response:
+        students = CustomUser.objects.filter(role="STUDENT")
+        serializer = UserStudentDetailSerializer(students, many=True)
+        return Response(serializer.data)
+
+
+class StudentDetailView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+    authentication_classes = [TokenAuthentication]
+
+    def get_user_by_pk(self, pk: int):
+        try:
+            student = CustomUser.objects.filter(role="STUDENT").get(pk=pk)
+            return student
+        except CustomUser.DoesNotExist:
+            return None
+
+    def get(self, request: Request, pk: int) -> Response:
+        student = self.get_user_by_pk(pk)
+        if student:
+            serializer = UserStudentDetailSerializer(student)
+            return Response(serializer.data)
+        else:
+            return Response(
+                data={"message": "user not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+    def put(self, request: Request, pk: int) -> Response:
+        student = self.get_user_by_pk(pk)
+        if student:
+            serializer = StudentUpdateSerailizer(
+                student.student, data=request.data, partial=True
+            )
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(serializer.data)
+            return Response(
+                data={"message": "updating error"}, status=status.HTTP_404_NOT_FOUND
+            )
+        else:
+            return Response(
+                data={"message": "user not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+    def delete(self, request: Request, pk: int) -> Response:
+        student = self.get_user_by_pk(pk)
+        if student:
+            student.student.delete()
+            student.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(
+                data={"message": "user not found"}, status=status.HTTP_404_NOT_FOUND
+            )

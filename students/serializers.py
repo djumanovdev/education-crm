@@ -14,7 +14,14 @@ class StudentCreateSerializer(serializers.Serializer):
 class StudentDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['full_name', 'phone_number', 'status', 'is_risk', 'created_at', 'updated_at']
+        fields = [
+            "full_name",
+            "phone_number",
+            "status",
+            "is_risk",
+            "created_at",
+            "updated_at",
+        ]
 
 
 class UserStudentDetailSerializer(serializers.ModelSerializer):
@@ -22,4 +29,10 @@ class UserStudentDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'role', 'email', 'student']
+        fields = ["id", "username", "role", "email", "student"]
+
+
+class StudentUpdateSerailizer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = "__all__"
