@@ -8,7 +8,7 @@ from rest_framework import status
 
 from accounts.permissions import IsAdmin
 from .models import Student
-from .serializers import StudentCreateSerializer
+from .serializers import StudentCreateSerializer, UserStudentDetailSerializer
 
 CustomUser = get_user_model()
 
@@ -51,13 +51,6 @@ class StudentsView(APIView):
             )
             student.save()
 
-            serializer = {
-                "username": student.account.username,
-                "full_name": student.full_name,
-                "phone_number": student.phone_number,
-                "role": student.account.role,
-                "is_risk": student.is_risk,
-                "status": student.status,
-            }
+            serializer = UserStudentDetailSerializer(user)
 
-            return Response(serializer, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
