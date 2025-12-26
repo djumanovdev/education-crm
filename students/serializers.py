@@ -10,9 +10,17 @@ class StudentCreateSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
 
 
-class StudentListSerializer(serializers.Serializer):
+class StudentListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Student
         fields = '__all__'
+
+
+class StudentDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Student
+        fields = ['id', 'full_name', 'phone_number', 'status', 'is_risk', 'created_at', 'updated_at']
+
         
