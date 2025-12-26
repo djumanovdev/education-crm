@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "accounts.apps.AccountsConfig",
     "students.apps.StudentsConfig",
+    "teachers.apps.TeachersConfig",
     "rest_framework",
     "rest_framework.authtoken",
 ]
