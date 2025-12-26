@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
@@ -82,3 +83,11 @@ class StudentDeleteView(APIView):
             {"message": "Student muvaffaqiyatli o'chirildi"},
             status=status.HTTP_200_OK,
         )
+    
+
+class StudentListView(ListAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+    authentication_classes = [TokenAuthentication]
+    queryset = Student.objects.all()
+    serializer_class = StudentCreateSerializer
+    
