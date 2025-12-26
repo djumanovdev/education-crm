@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "students.apps.StudentsConfig",
     "teachers.apps.TeachersConfig",
+    "groups.apps.GroupsConfig",
     "rest_framework",
     "rest_framework.authtoken",
 ]
